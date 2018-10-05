@@ -34,6 +34,9 @@ namespace ShareTheBeat.Controllers
                 return BadRequest("States do not match");
 
             HttpContext.Response.Cookies.Delete("spotify_state_token");
+            HttpContext.Response.Cookies.Delete("spotify_token_expires");
+            HttpContext.Response.Cookies.Delete("spotify_access_token");
+            HttpContext.Response.Cookies.Delete("spotify_refresh_token");
 
             var redirectUri = $"{this.Request.Scheme}://{this.Request.Host}/Spotify/Callback";
 
@@ -52,7 +55,8 @@ namespace ShareTheBeat.Controllers
 
                 HttpContext.Response.Cookies.Append("spotify_access_token", postResponse.access_token);
                 HttpContext.Response.Cookies.Append("spotify_refresh_token", postResponse.refresh_token);
-                
+                HttpContext.Response.Cookies.Append("spotify_token_expires", DateTime.Now.AddSeconds(postResponse.expires_in).ToString("yyyy-MM-dd HH:mm:ss.fff"));
+
                 return RedirectToAction("Index", "Home");
             }
             else {
@@ -70,7 +74,7 @@ namespace ShareTheBeat.Controllers
 
             var redirectUri = $"{this.Request.Scheme}://{this.Request.Host}/Spotify/Callback";
 
-            var form = new Dictionary<string, string> {{"refresh_token", refreshToken}, {"grant_type", "refresh_token"}};
+            var form = new Dictionary<string, string> {{ "grant_type", "refresh_token" }, { "refresh_token", refreshToken } };
 
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization","Basic " + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(CLIENT_ID + ":" + CLIENT_SECRET)));
@@ -84,41 +88,22 @@ namespace ShareTheBeat.Controllers
                 PostTokensBody postResponse = await response.Content.ReadAsAsync<PostTokensBody>();
 
                  HttpContext.Response.Cookies.Delete("spotify_access_token");
+                 HttpContext.Response.Cookies.Delete("spotify_token_expires");
                 HttpContext.Response.Cookies.Append("spotify_access_token", postResponse.access_token);
-                
+                HttpContext.Response.Cookies.Append("spotify_token_expires", DateTime.Now.AddSeconds(postResponse.expires_in).ToString("yyyy-MM-dd HH:mm:ss.fff"));
+
                 return RedirectToAction("Index", "Home");
             }
             else {
                 var responseString = await response.Content.ReadAsStringAsync();
                 return BadRequest(responseString);
             }
-
-//             var refresh_token = req.query.refresh_token;
-//     var authOptions = {
-//       url: 'https://accounts.spotify.com/api/token',
-//       headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-//       form: {
-//         grant_type: 'refresh_token',
-//         refresh_token: refresh_token
-//       },
-//       json: true
-//     };
-  
-//     request.post(authOptions, function(error, response, body) {
-//       if (!error && response.statusCode === 200) {
-//         var access_token = body.access_token;
-//         res.send({
-//           'access_token': access_token
-//         });
-//       }
-//     });
-//   });
         }
 
         private class PostTokensBody {
             public string access_token {get; set;}
             public string refresh_token {get; set;}
-            
+            public long expires_in {get; set;}
         }
     
 

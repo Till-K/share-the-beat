@@ -6,11 +6,11 @@
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
 
-        while(c.charAt(0) == " ") {
+        while(c.charAt(0) === " ") {
             c = c.substring(1);
         }
 
-        if(c.indexOf(name) == 0) {
+        if(c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
@@ -24,14 +24,19 @@ let getTime = (milli) => {
     let minutes = time.getUTCMinutes();
     let seconds = time.getUTCSeconds();
 
-    if(hours !== 0)
+    if (hours !== 0)
         return (hours + ":" + minutes + ":" + seconds);
-    else 
+    else
         return (minutes + ":" + seconds);
-  }
+};
 
   var access_token = getCookie("spotify_access_token");
-  var refresh_token = getCookie("spotify_refresh_token");
+var refresh_token = getCookie("spotify_refresh_token");
+var token_expires = getCookie("spotify_token_expires");
+
+if (token_expires === "" || Date.parse(token_expires) <= Date.now()) {
+    window.location.replace("/Spotify/RefreshToken");
+}
 
   var playback_device_id = undefined;
 
@@ -89,6 +94,15 @@ $(document).ready(function() {
         headers: { 'Authorization': 'Bearer ' + access_token }
     });
 
+    $(".buttons button").click(function () {
+        if ($(this).hasClass("play")) {
+            player.resume();
+        }
+        else if ($(this).hasClass("pause")) {
+            player.pause();
+        }
+    });
+
     $("input[name=search]").change(function() {
         var searchQuery = $(this).val();
 
@@ -142,9 +156,18 @@ $(document).ready(function() {
   
     // Playback status updates
     player.addListener('player_state_changed', state => {
-        if(state.paused === true && queue.length > 0) {
-            play(queue[0]);
-            queue.splice(-1,1)
+        if (state.paused === true) {
+            $(".pause").addClass("play");
+            $(".pause").removeClass("pause");
+
+            if (queue.length > 0) {
+                play(queue[0]);
+                queue.splice(-1, 1);
+            }
+        }
+        else if (state.paused === false) {
+            $(".play").addClass("pause");
+            $(".play").removeClass("play");
         }
      });
   
