@@ -10,9 +10,20 @@ body {
 
 .buttons {
     text-align: center;
+    height: 2.2rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.buttons button {
+    position: absolute;
+    top: 0;
+    box-sizing: border-box;
 }
 
 button.play {
+    left: 50%;
+    transform: translate(-40%, 0);
     width: 0;
     height: 0;
     border-style: solid;
@@ -25,24 +36,103 @@ button.play {
     border-right-color: transparent;
     background: none;
     cursor: pointer;
-    display: inline-block;
+    display: inline;
+    outline: none;
+}
+
+button.skip {
+    left: calc(50% + 2rem);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 1rem;
+    border-right-width: 0;
+    border-left-width: 2rem;
+    border-color: #202020;
+    border-bottom-color: transparent;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    background: none;
+    cursor: pointer;
+    display: inline;
+    outline: none;
+}
+
+button.skip::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    transform: translate(-60%, -50%);
+    border-style: solid;
+    border-width: 1rem;
+    border-right-width: 0;
+    border-left-width: 2rem;
+    border-color: #202020;
+    border-bottom-color: transparent;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    background: none;
+    cursor: pointer;
+    display: inline;
+    outline: none;
+}
+
+button.rewind {
+    left: calc(50% - 2rem);
+    transform: translate(-100%, 0);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 1rem;
+    border-left-width: 0;
+    border-right-width: 2rem;
+    border-color: #202020;
+    border-bottom-color: transparent;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    margin-right: 1rem;
+    background: none;
+    cursor: pointer;
+    display: inline;
+    outline: none;
+}
+
+button.rewind::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    transform: translate(-60%, -50%);
+    border-style: solid;
+    border-width: 1rem;
+    border-left-width: 0;
+    border-right-width: 2rem;
+    border-color: #202020;
+    border-bottom-color: transparent;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    background: none;
+    cursor: pointer;
+    display: inline;
     outline: none;
 }
 
 button.pause {
-    display: inline-block;
-    width: 1rem;
+    left: 50%;
+    transform: translate(-40%, 0);
     height: 2rem;
     border-style: solid;
     border-width: 0;
-    border-right-width: .5rem;
-    border-left-width: .5rem;
+    border-left-width: 2rem;
+    border-style: double;
     border-color: #202020;
     border-bottom-color: transparent;
     border-top-color: transparent;
     background: none;
     cursor: pointer;
     outline: none;
+    display: inline;
 }
 
 .bg {
@@ -150,4 +240,21 @@ input:focus {
     position: absolute;
     top: 2.7rem;
     color: #ababab;
+}
+
+.btn {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #40739e;
+    padding: .5rem 0;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 1rem;
+    transition: all .33s ease-in-out;
+}
+
+.btn:hover {
+    background-color: #5a90be;
 }

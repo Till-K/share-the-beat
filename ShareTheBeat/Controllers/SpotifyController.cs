@@ -21,7 +21,7 @@ namespace ShareTheBeat.Controllers
 
             var redirectUri = $"{this.Request.Scheme}://{this.Request.Host}/Spotify/Callback";
 
-            var querystring = GetQueryString(new {response_type = "code", client_id = CLIENT_ID, scope = "streaming user-modify-playback-state user-read-birthdate user-read-private user-read-email", redirect_uri = redirectUri, state = state});
+            var querystring = GetQueryString(new {response_type = "code", client_id = CLIENT_ID, scope = "playlist-modify-public streaming user-modify-playback-state user-read-birthdate user-read-private user-read-email", redirect_uri = redirectUri, state = state});
 
             return Redirect("https://accounts.spotify.com/authorize?" + querystring);
         }
@@ -57,6 +57,8 @@ namespace ShareTheBeat.Controllers
                 HttpContext.Response.Cookies.Append("spotify_refresh_token", postResponse.refresh_token);
                 HttpContext.Response.Cookies.Append("spotify_token_expires", DateTime.Now.AddSeconds(postResponse.expires_in).ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
+                
+
                 return RedirectToAction("Index", "Home");
             }
             else {
@@ -69,8 +71,8 @@ namespace ShareTheBeat.Controllers
         public async Task<ActionResult> RefreshToken() {
             var refreshToken = HttpContext.Request.Cookies["spotify_refresh_token"];
 
-            if(refreshToken == null)
-                return BadRequest("No Current Token");
+            if (refreshToken == null)
+                return RedirectToAction("Login");
 
             var redirectUri = $"{this.Request.Scheme}://{this.Request.Host}/Spotify/Callback";
 
@@ -107,7 +109,7 @@ namespace ShareTheBeat.Controllers
         }
     
 
-        private static string RandomString(int length) {
+        public static string RandomString(int length) {
             const string chars = "QWERTZUIOPASDFGHJKLYXCVBNMqwertzuiopasdfghjklyxcvbnm1234567890";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[new Random().Next(s.Length)]).ToArray());
         }

@@ -13,20 +13,6 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
-</head>
-<body>
-    <partial name="_CookieConsentPartial" />
-
-    <div class="bg"></div>
-    <div class="content">
-        <div class="logo">
-            <h1>Share The Beat</h1>
-        </div>
-        @RenderBody()
-
-    </div>
-
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
@@ -42,5 +28,19 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+</head>
+<body>
+    <partial name="_CookieConsentPartial" />
+
+    <div class="bg"></div>
+    <div class="content">
+        <div class="logo">
+            <h1>Share The Beat</h1>
+        </div>
+        @RenderBody()
+
+    </div>
 </body>
 </html>
